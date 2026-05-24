@@ -25,6 +25,7 @@ This Bash [script](./safe_hashes.sh) calculates the Safe transaction hashes by r
     - [Basic Usage](#basic-usage)
     - [Using Message Files](#using-message-files)
     - [With Environment Variables](#with-environment-variables)
+  - [Qubes OS](#qubes-os)
 - [Safe Transaction Hashes](#safe-transaction-hashes)
   - [Interactive Mode](#interactive-mode)
   - [Transaction Simulation](#transaction-simulation)
@@ -49,25 +50,32 @@ This Bash [script](./safe_hashes.sh) calculates the Safe transaction hashes by r
 
 - 0G (identifier: `0g`, chain ID: `16661`)
 - Arbitrum (identifier: `arbitrum`, chain ID: `42161`)
+- Arc Testnet (identifier: `arc-testnet`, chain ID: `5042002`)
 - Aurora (identifier: `aurora`, chain ID: `1313161554`)
 - Avalanche (identifier: `avalanche`, chain ID: `43114`)
 - Base (identifier: `base`, chain ID: `8453`)
 - Base Sepolia (identifier: `base-sepolia`, chain ID: `84532`)
+- Bepolia (identifier: `bepolia`, chain ID: `80069`)
 - Berachain (identifier: `berachain`, chain ID: `80094`)
 - Botanix (identifier: `botanix`, chain ID: `3637`)
 - BSC (BNB Smart Chain) (identifier: `bsc`, chain ID: `56`)
 - Celo (identifier: `celo`, chain ID: `42220`)
 - Codex (identifier: `codex`, chain ID: `81224`)
+- Creditcoin (identifier: `creditcoin`, chain ID: `102030`)
 - Ethereum (identifier: `ethereum`, chain ID: `1`)
 - Gnosis (identifier: `gnosis`, chain ID: `100`)
 - Gnosis Chiado (identifier: `gnosis-chiado`, chain ID: `10200`)
 - Hemi (identifier: `hemi`, chain ID: `43111`)
+- HyperEVM (identifier: `hyperevm`, chain ID: `999`)
 - Ink (identifier: `ink`, chain ID: `57073`)
 - Katana (identifier: `katana`, chain ID: `747474`)
 - Lens (identifier: `lens`, chain ID: `232`)
 - Linea (identifier: `linea`, chain ID: `59144`)
 - Mantle (identifier: `mantle`, chain ID: `5000`)
+- Mantle Sepolia (identifier: `mantle-sepolia`, chain ID: `5003`)
+- MegaETH (identifier: `megaeth`, chain ID: `4326`)
 - Monad (identifier: `monad`, chain ID: `143`)
+- Monad Testnet (identifier: `monad-testnet`, chain ID: `10143`)
 - opBNB (identifier: `opbnb`, chain ID: `204`)
 - OP (Optimism) (identifier: `optimism`, chain ID: `10`)
 - peaq (identifier: `peaq`, chain ID: `3338`)
@@ -77,6 +85,7 @@ This Bash [script](./safe_hashes.sh) calculates the Safe transaction hashes by r
 - Scroll (identifier: `scroll`, chain ID: `534352`)
 - Sepolia (identifier: `sepolia`, chain ID: `11155111`)
 - Sonic (identifier: `sonic`, chain ID: `146`)
+- Stable (identifier: `stable`, chain ID: `988`)
 - Unichain (identifier: `unichain`, chain ID: `130`)
 - World Chain (identifier: `worldchain`, chain ID: `480`)
 - XDC Network (identifier: `xdc`, chain ID: `50`)
@@ -86,7 +95,7 @@ This Bash [script](./safe_hashes.sh) calculates the Safe transaction hashes by r
 ## Usage
 
 > [!NOTE]
-> Ensure that [`cast`](https://github.com/foundry-rs/foundry/tree/master/crates/cast) and [`chisel`](https://github.com/foundry-rs/foundry/tree/master/crates/chisel) are installed locally. For installation instructions, refer to this [guide](https://getfoundry.sh/introduction/installation/). This [script](./safe_hashes.sh) is designed to work with the latest _stable_ versions of [`cast`](https://github.com/foundry-rs/foundry/tree/master/crates/cast) and [`chisel`](https://github.com/foundry-rs/foundry/tree/master/crates/chisel), starting from version [`1.3.5`](https://github.com/foundry-rs/foundry/releases/tag/v1.3.5).
+> Ensure that [`cast`](https://github.com/foundry-rs/foundry/tree/master/crates/cast) and [`chisel`](https://github.com/foundry-rs/foundry/tree/master/crates/chisel) are installed locally. For installation instructions, refer to this [guide](https://www.getfoundry.sh/introduction/installation). This [script](./safe_hashes.sh) is designed to work with the latest _stable_ versions of [`cast`](https://github.com/foundry-rs/foundry/tree/master/crates/cast) and [`chisel`](https://github.com/foundry-rs/foundry/tree/master/crates/chisel), starting from version [`1.3.5`](https://github.com/foundry-rs/foundry/releases/tag/v1.3.5).
 
 > [!TIP]
 > For macOS users, please refer to the [macOS Users: Upgrading Bash](#macos-users-upgrading-bash) section. Alternatively, you can use the Docker container, which comes pre-installed with all required dependencies. For details, see the [Docker Usage](#docker-usage) section below.
@@ -212,14 +221,14 @@ Make sure to replace `BASH_PATH` with the actual path you retrieved in step 1.
 Using [Docker](https://www.docker.com), you can run the [script](./safe_hashes.sh) in a containerised environment with all dependencies pre-installed. This is useful if you do not wish to install the required tools locally, or if you are on a system where installation is difficult.
 
 > [!TIP]
-> The [Docker](https://www.docker.com) setup can also be used with [Podman](https://podman.io) by simply replacing `docker-compose` with [`podman-compose`](https://github.com/containers/podman-compose) in the commands. On Windows and macOS, you may need to disable or override the [`AppArmor`](https://apparmor.net) security option in the [`compose.yaml`](./compose.yaml) file, as it is only supported on Linux environments. [Docker](https://www.docker.com) typically ignores unsupported security options like [`AppArmor`](https://apparmor.net) on non-Linux systems, but [Podman](https://podman.io) will fail when encountering them.
+> The [Docker](https://www.docker.com) setup can also be used with [Podman](https://podman.io) by simply replacing `docker compose` with [`podman-compose`](https://github.com/containers/podman-compose) in the commands. On Windows and macOS, you may need to disable or override the [`AppArmor`](https://apparmor.net) security option in the [`compose.yaml`](./compose.yaml) file, as it is only supported on Linux environments. [Docker](https://www.docker.com) typically ignores unsupported security options like [`AppArmor`](https://apparmor.net) on non-Linux systems, but [Podman](https://podman.io) will fail when encountering them.
 
 #### Building the Docker Image
 
 Build the [Docker](https://www.docker.com) image using [Docker Compose](https://docs.docker.com/compose/):
 
 ```console
-docker-compose build
+docker compose build
 ```
 
 #### Basic Usage
@@ -229,13 +238,13 @@ To run the [script](./safe_hashes.sh) using [Docker Compose](https://docs.docker
 Example displaying help:
 
 ```console
-docker-compose run --rm safe-tx-hashes-util --help
+docker compose run --rm safe-tx-hashes-util --help
 ```
 
 Example calculating the Safe transaction hashes:
 
 ```console
-docker-compose run --rm safe-tx-hashes-util --network arbitrum --address 0x111CEEee040739fD91D29C34C33E6B3E112F2177 --nonce 234
+docker compose run --rm safe-tx-hashes-util --network arbitrum --address 0x111CEEee040739fD91D29C34C33E6B3E112F2177 --nonce 234
 ```
 
 #### Using Message Files
@@ -248,7 +257,7 @@ When calculating off-chain message hashes, you need to provide a local directory
 ~$ echo "Your message content here" > data/message.txt
 
 # Run the container with the mounted directory.
-~$ docker-compose run --rm safe-tx-hashes-util \
+~$ docker compose run --rm safe-tx-hashes-util \
   --network sepolia \
   --address 0x657ff0D4eC65D82b2bC1247b0a558bcd2f80A0f1 \
   --message /data/message.txt
@@ -260,7 +269,7 @@ You can pass environment variables directly via [Docker Compose](https://docs.do
 
 ```console
 # Disable all formatting.
-docker-compose run --rm -e NO_COLOR=true safe-tx-hashes-util \
+docker compose run --rm -e NO_COLOR=true safe-tx-hashes-util \
   --network arbitrum \
   --address 0x111CEEee040739fD91D29C34C33E6B3E112F2177 \
   --nonce 234
@@ -268,6 +277,10 @@ docker-compose run --rm -e NO_COLOR=true safe-tx-hashes-util \
 
 > [!IMPORTANT]
 > Running in a [Docker](https://www.docker.com) container offers isolation, but it is important to always follow the [Security Best Practices](#security-best-practices-for-using-this-script).
+
+### Qubes OS
+
+A [Qubes OS](https://www.qubes-os.org) [Salt](https://doc.qubes-os.org/en/latest/user/advanced-topics/salt.html) configuration for building a minimal, reproducible template VM that includes this [script](./safe_hashes.sh) and the [Foundry](https://github.com/foundry-rs/foundry) toolchain is available [here](https://github.com/pcaversaccio/safe-tx-hashes-util-qubes).
 
 ## Safe Transaction Hashes
 
@@ -425,7 +438,7 @@ Safe transaction hash: 0xc818fceb1cace51c1a4039c4c66fc73d95eccc298104c9c52debac6
 > [!WARNING]
 > A simulation depends on data provided by your RPC provider. Using your own node is always recommended.
 
-You can simulate a transaction using the `--simulate` option with an RPC URL. This runs [`cast call --trace`](https://getfoundry.sh/cast/reference/call/) against the _latest_ block to produce a detailed execution trace. Use this option to check exactly how the transaction will execute _before_ signing. As an example, invoke the following command:
+You can simulate a transaction using the `--simulate` option with an RPC URL. This runs [`cast call --trace`](https://www.getfoundry.sh/reference/cast/call) against the _latest_ block to produce a detailed execution trace. Use this option to check exactly how the transaction will execute _before_ signing. As an example, invoke the following command:
 
 ```console
 ./safe_hashes.sh --network ethereum --address 0x5EA1d9A6dDC3A0329378a327746D71A2019eC332 --nonce 6 --simulate https://eth.llamarpc.com
@@ -455,7 +468,7 @@ Please note that we override specific Safe contract storage slots for this call:
 
 Then execute the `cast call --trace` command with the transaction payload from `signer_address` address `0xD5AEB612f43919FCbfFd0eEa734D0E9130D14b2e` using the overridden states:
 ```bash
-cast call --trace --from "0xD5AEB612f43919FCbfFd0eEa734D0E9130D14b2e" \
+cast call --color never --trace --from "0xD5AEB612f43919FCbfFd0eEa734D0E9130D14b2e" \
   "0x5EA1d9A6dDC3A0329378a327746D71A2019eC332" \
   --data "0x6a7612020000000000000000000000009641d764fc13c8b624c04430c7356c1c7c8102e200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000001848d80ff0a0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000013200cfbfac74c26f8647cbdb8c5caf80bb5b32e4313400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000044dd43a79f000000000000000000000000f46c6d6e62f59d9222f3812874211df07cf7b318000000000000000000000000000000000000000000000000000000000000000100a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000044a9059cbb0000000000000000000000001fe27a73cd9f0b3c53b6e936d0b4f9b2f8ca3367000000000000000000000000000000000000000000000000000000002faf0800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004101427eae1606844b055aabb63778fc9e523e48b25dff5dbd1db76752c68f338a14ef6bb18733969e9db45e96d89fab546609f9404e1f779d15248203d7c7c5a91b00000000000000000000000000000000000000000000000000000000000000" \
   --override-state-diff "0x5EA1d9A6dDC3A0329378a327746D71A2019eC332:0x269bb0dc23923a25a8c39074e6cb0c85f1f29fd13f8dfa05d81baf046ed3b9af:1,0x5EA1d9A6dDC3A0329378a327746D71A2019eC332:4:1,0x5EA1d9A6dDC3A0329378a327746D71A2019eC332:0x4a204f620c8c5ccdca3fd54d003badd85ba500436a431f0cbda4f558c93c34c8:0,0x5EA1d9A6dDC3A0329378a327746D71A2019eC332:0xb104e0b93118902c651344349b610029d694cfdec91c589c91ebafbcd0289947:0" \
@@ -496,7 +509,7 @@ Gas used: 126695
 
 ### Nested Safes
 
-This [script](./safe_hashes.sh) supports calculating the Safe transaction hashes for nested Safe (i.e. use a Safe as a signatory to another Safe) approval transactions. When a nested Safe needs to approve a transaction on the primary Safe, it must call the [`approveHash(bytes32)`](https://github.com/safe-global/safe-smart-account/blob/bdcfce3a76c4d1dfb256ac2ca971be7cfd6e493a/contracts/Safe.sol#L372-L379) function on the target Safe with the Safe transaction hash to approve:
+This [script](./safe_hashes.sh) supports calculating the Safe transaction hashes for nested Safe (i.e. use a Safe as a signatory to another Safe) approval transactions. When a nested Safe needs to approve a transaction on the primary Safe, it must call the [`approveHash(bytes32)`](https://github.com/safe-fndn/safe-smart-account/blob/bdcfce3a76c4d1dfb256ac2ca971be7cfd6e493a/contracts/Safe.sol#L372-L379) function on the target Safe with the Safe transaction hash to approve:
 
 ```solidity
 function approveHash(bytes32 hashToApprove) external override {
@@ -684,4 +697,4 @@ Safe message hash: 0x1866b559f56261ada63528391b93a1fe8e2e33baf7cace94fc6b42202d1
 
 I am a strong advocate of the open-source and free software paradigm. However, if you feel my work deserves a donation, you can send it to this address: [`0xe9Fa0c8B5d7F79DeC36D3F448B1Ac4cEdedE4e69`](https://etherscan.io/address/0xe9Fa0c8B5d7F79DeC36D3F448B1Ac4cEdedE4e69). I can pledge that I will use this money to help fix more existing challenges in the Ethereum ecosystem 🤝.
 
-[^1]: It is theoretically possible to query transactions prior to the first signature; however, this functionality is not incorporated into the main [script](https://github.com/pcaversaccio/safe-tx-hashes-util/blob/main/safe_hashes.sh). To do so, you would proceed through the [Safe UI](https://app.safe.global) as usual, stopping at the page where the transaction is signed or executed. At this point, the action is recorded in the [Safe Transaction Service API](https://docs.safe.global/core-api/transaction-service-overview), allowing you to retrieve the unsigned transaction by setting `trusted=false` in the [API](https://docs.safe.global/core-api/transaction-service-reference/mainnet#List-a-Safe's-Multisig-Transactions) query within your Bash script. For example, you might use a query such as: `https://safe-transaction-arbitrum.safe.global/api/v2/safes/0xB24A3AA250E209bC95A4a9afFDF10c6D099B3d34/multisig-transactions/?trusted=false&nonce=4`. This decision to not implement this feature avoids potential confusion caused by unsigned transactions in the queue, especially when multiple transactions share the same nonce, making it unclear which one to act upon. If this feature aligns with your needs, feel free to fork the [script](https://github.com/pcaversaccio/safe-tx-hashes-util/blob/main/safe_hashes.sh) and modify it as necessary.
+[^1]: It is theoretically possible to query transactions prior to the first signature; however, this functionality is not incorporated into the main [script](https://github.com/pcaversaccio/safe-tx-hashes-util/blob/main/safe_hashes.sh). To do so, you would proceed through the [Safe UI](https://app.safe.global) as usual, stopping at the page where the transaction is signed or executed. At this point, the action is recorded in the [Safe Transaction Service API](https://docs.safe.global/core-api/transaction-service-overview), allowing you to retrieve the unsigned transaction by setting `trusted=false` in the [API](https://docs.safe.global/core-api/transaction-service-reference/mainnet#List-a-Safe's-Multisig-Transactions) query within your Bash script. For example, you might use a query such as: `https://api.safe.global/tx-service/arb1/api/v2/safes/0xB24A3AA250E209bC95A4a9afFDF10c6D099B3d34/multisig-transactions/?trusted=false&nonce=4`. This decision to not implement this feature avoids potential confusion caused by unsigned transactions in the queue, especially when multiple transactions share the same nonce, making it unclear which one to act upon. If this feature aligns with your needs, feel free to fork the [script](https://github.com/pcaversaccio/safe-tx-hashes-util/blob/main/safe_hashes.sh) and modify it as necessary.

@@ -25,19 +25,25 @@ fi
 # - https://no-color.org for disabling colour output,
 # - https://force-color.org for forcing colour output.
 # Only the exact value `true` is accepted to avoid accidental activation.
+# Also, we set the variable `CAST_COLOUR` used by `cast` (`auto`/`always`/`never`).
+# See: https://www.getfoundry.sh/reference/cast/cast.
 setup_colours() {
 	if [[ "${NO_COLOR:-false}" == "true" ]]; then
 		readonly COLOUR_ENABLED=0
+		readonly CAST_COLOUR="never"
 	elif [[ "${FORCE_COLOR:-false}" == "true" ]]; then
 		readonly COLOUR_ENABLED=1
+		readonly CAST_COLOUR="always"
 	# Enable colours only if:
 	# 1) output is a terminal (not piped or redirected),
 	# 2) the `tput` command is available,
 	# 3) and the terminal supports at least 8 colours (i.e. the standard ANSI colours).
 	elif [[ -t 1 && -n "$(command -v tput)" && "$(tput colors)" -ge 8 ]]; then
 		readonly COLOUR_ENABLED=1
+		readonly CAST_COLOUR="always"
 	else
 		readonly COLOUR_ENABLED=0
+		readonly CAST_COLOUR="never"
 	fi
 
 	if [[ "$COLOUR_ENABLED" -eq 1 ]]; then
@@ -156,27 +162,27 @@ global_safe_tx_hash_simulated="0x00000000000000000000000000000000000000000000000
 
 # Set the type hash constants.
 # => `keccak256("EIP712Domain(uint256 chainId,address verifyingContract)");`
-# See: https://github.com/safe-global/safe-smart-account/blob/a0a1d4292006e26c4dbd52282f4c932e1ffca40f/contracts/Safe.sol#L54-L57.
+# See: https://github.com/safe-fndn/safe-smart-account/blob/a0a1d4292006e26c4dbd52282f4c932e1ffca40f/contracts/Safe.sol#L54-L57.
 readonly DOMAIN_SEPARATOR_TYPEHASH="0x47e79534a245952e8b16893a336b85a3d9ea9fa8c573f3d803afb92a79469218"
 # => `keccak256("EIP712Domain(address verifyingContract)");`
-# See: https://github.com/safe-global/safe-smart-account/blob/703dde2ea9882a35762146844d5cfbeeec73e36f/contracts/GnosisSafe.sol#L20-L23.
+# See: https://github.com/safe-fndn/safe-smart-account/blob/703dde2ea9882a35762146844d5cfbeeec73e36f/contracts/GnosisSafe.sol#L20-L23.
 readonly DOMAIN_SEPARATOR_TYPEHASH_OLD="0x035aff83d86937d35b32e04f0ddc6ff469290eef2f1b692d8a815c89404d4749"
 # => `keccak256("SafeTx(address to,uint256 value,bytes data,uint8 operation,uint256 safeTxGas,uint256 baseGas,uint256 gasPrice,address gasToken,address refundReceiver,uint256 nonce)");`
-# See: https://github.com/safe-global/safe-smart-account/blob/a0a1d4292006e26c4dbd52282f4c932e1ffca40f/contracts/Safe.sol#L59-L62.
+# See: https://github.com/safe-fndn/safe-smart-account/blob/a0a1d4292006e26c4dbd52282f4c932e1ffca40f/contracts/Safe.sol#L59-L62.
 readonly SAFE_TX_TYPEHASH="0xbb8310d486368db6bd6f849402fdd73ad53d316b5a4b2644ad6efe0f941286d8"
 # => `keccak256("SafeTx(address to,uint256 value,bytes data,uint8 operation,uint256 safeTxGas,uint256 dataGas,uint256 gasPrice,address gasToken,address refundReceiver,uint256 nonce)");`
-# See: https://github.com/safe-global/safe-smart-account/blob/427d6f7e779431333c54bcb4d4cde31e4d57ce96/contracts/GnosisSafe.sol#L25-L28.
+# See: https://github.com/safe-fndn/safe-smart-account/blob/427d6f7e779431333c54bcb4d4cde31e4d57ce96/contracts/GnosisSafe.sol#L25-L28.
 readonly SAFE_TX_TYPEHASH_OLD="0x14d461bc7412367e924637b363c7bf29b8f47e2f84869f4426e5633d8af47b20"
 # => `keccak256("SafeMessage(bytes message)");`
-# See: https://github.com/safe-global/safe-smart-account/blob/febab5e4e859e6e65914f17efddee415e4992961/contracts/libraries/SignMessageLib.sol#L12-L13.
+# See: https://github.com/safe-fndn/safe-smart-account/blob/febab5e4e859e6e65914f17efddee415e4992961/contracts/libraries/SignMessageLib.sol#L12-L13.
 readonly SAFE_MSG_TYPEHASH="0x60b3cbf8b4a223d68d641b3b6ddf9a298e7f33710cf3d3a9d1146b5a6150fbca"
 
 # Set the storage slots for the configured transaction and module guards.
 # => `keccak256("guard_manager.guard.address");`
-# See: https://github.com/safe-global/safe-smart-account/blob/333f84083e58df8e70b03e7f7df1947c1d77b262/contracts/libraries/SafeStorage.sol#L63-L67.
+# See: https://github.com/safe-fndn/safe-smart-account/blob/333f84083e58df8e70b03e7f7df1947c1d77b262/contracts/libraries/SafeStorage.sol#L63-L67.
 readonly GUARD_STORAGE_SLOT="0x4a204f620c8c5ccdca3fd54d003badd85ba500436a431f0cbda4f558c93c34c8"
 # => `keccak256("module_manager.module_guard.address");`
-# See: https://github.com/safe-global/safe-smart-account/blob/333f84083e58df8e70b03e7f7df1947c1d77b262/contracts/libraries/SafeStorage.sol#L69-L73.
+# See: https://github.com/safe-fndn/safe-smart-account/blob/333f84083e58df8e70b03e7f7df1947c1d77b262/contracts/libraries/SafeStorage.sol#L69-L73.
 readonly MODULE_GUARD_STORAGE_SLOT="0xb104e0b93118902c651344349b610029d694cfdec91c589c91ebafbcd0289947"
 
 # Set the trusted (i.e. for delegate calls) `MultiSendCallOnly` addresses:
@@ -237,25 +243,32 @@ readonly BASE_URL="https://api.safe.global/tx-service"
 declare -A -r API_URLS=(
 	["0g"]="${BASE_URL}/0g"
 	["arbitrum"]="${BASE_URL}/arb1"
+	["arc-testnet"]="${BASE_URL}/arc-testnet"
 	["aurora"]="${BASE_URL}/aurora"
 	["avalanche"]="${BASE_URL}/avax"
 	["base"]="${BASE_URL}/base"
 	["base-sepolia"]="${BASE_URL}/basesep"
+	["bepolia"]="${BASE_URL}/bep"
 	["berachain"]="${BASE_URL}/berachain"
 	["botanix"]="${BASE_URL}/btc"
 	["bsc"]="${BASE_URL}/bnb"
 	["celo"]="${BASE_URL}/celo"
 	["codex"]="${BASE_URL}/codex"
+	["creditcoin"]="${BASE_URL}/ctc"
 	["ethereum"]="${BASE_URL}/eth"
 	["gnosis"]="${BASE_URL}/gno"
 	["gnosis-chiado"]="${BASE_URL}/chi"
 	["hemi"]="${BASE_URL}/hemi"
+	["hyperevm"]="${BASE_URL}/hyper"
 	["ink"]="${BASE_URL}/ink"
 	["katana"]="${BASE_URL}/katana"
 	["lens"]="${BASE_URL}/lens"
 	["linea"]="${BASE_URL}/linea"
 	["mantle"]="${BASE_URL}/mantle"
+	["mantle-sepolia"]="${BASE_URL}/mnt-sep"
+	["megaeth"]="${BASE_URL}/mega"
 	["monad"]="${BASE_URL}/monad"
+	["monad-testnet"]="${BASE_URL}/monad-testnet"
 	["opbnb"]="${BASE_URL}/opbnb"
 	["optimism"]="${BASE_URL}/oeth"
 	["peaq"]="${BASE_URL}/peaq"
@@ -265,6 +278,7 @@ declare -A -r API_URLS=(
 	["scroll"]="${BASE_URL}/scr"
 	["sepolia"]="${BASE_URL}/sep"
 	["sonic"]="${BASE_URL}/sonic"
+	["stable"]="${BASE_URL}/stable"
 	["unichain"]="${BASE_URL}/unichain"
 	["worldchain"]="${BASE_URL}/wc"
 	["xdc"]="${BASE_URL}/xdc"
@@ -276,25 +290,32 @@ declare -A -r API_URLS=(
 declare -A -r CHAIN_IDS=(
 	["0g"]="16661"
 	["arbitrum"]="42161"
+	["arc-testnet"]="5042002"
 	["aurora"]="1313161554"
 	["avalanche"]="43114"
 	["base"]="8453"
 	["base-sepolia"]="84532"
+	["bepolia"]="80069"
 	["berachain"]="80094"
 	["botanix"]="3637"
 	["bsc"]="56"
 	["celo"]="42220"
 	["codex"]="81224"
+	["creditcoin"]="102030"
 	["ethereum"]="1"
 	["gnosis"]="100"
 	["gnosis-chiado"]="10200"
 	["hemi"]="43111"
+	["hyperevm"]="999"
 	["ink"]="57073"
 	["katana"]="747474"
 	["lens"]="232"
 	["linea"]="59144"
 	["mantle"]="5000"
+	["mantle-sepolia"]="5003"
+	["megaeth"]="4326"
 	["monad"]="143"
+	["monad-testnet"]="10143"
 	["opbnb"]="204"
 	["optimism"]="10"
 	["peaq"]="3338"
@@ -304,6 +325,7 @@ declare -A -r CHAIN_IDS=(
 	["scroll"]="534352"
 	["sepolia"]="11155111"
 	["sonic"]="146"
+	["stable"]="988"
 	["unichain"]="130"
 	["worldchain"]="480"
 	["xdc"]="50"
@@ -594,7 +616,7 @@ calculate_domain_hash() {
 	local clean_version=$(get_version "$version")
 
 	# Safe multisig versions `<= 1.2.0` use a legacy (i.e. without `chainId`) `DOMAIN_SEPARATOR_TYPEHASH` value.
-	# Starting with version `1.3.0`, the `chainId` field was introduced: https://github.com/safe-global/safe-smart-account/pull/264.
+	# Starting with version `1.3.0`, the `chainId` field was introduced: https://github.com/safe-fndn/safe-smart-account/pull/264.
 	if [[ "$(printf "%s\n%s" "$clean_version" "1.2.0" | sort -V | head -n1)" == "$clean_version" ]]; then
 		domain_separator_typehash="$DOMAIN_SEPARATOR_TYPEHASH_OLD"
 		domain_hash_args="$domain_separator_typehash, $address"
@@ -644,7 +666,7 @@ calculate_hashes() {
 
 	# Safe multisig versions `< 1.0.0` use a legacy (i.e. the parameter value `baseGas` was
 	# called `dataGas` previously) `SAFE_TX_TYPEHASH` value. Starting with version `1.0.0`,
-	# `baseGas` was introduced: https://github.com/safe-global/safe-smart-account/pull/90.
+	# `baseGas` was introduced: https://github.com/safe-fndn/safe-smart-account/pull/90.
 	if [[ "$(printf "%s\n%s" "$clean_version" "1.0.0" | sort -V | head -n1)" == "$clean_version" && "$clean_version" != "1.0.0" ]]; then
 		safe_tx_typehash="$SAFE_TX_TYPEHASH_OLD"
 	fi
@@ -703,9 +725,9 @@ calculate_nested_safe_hashes() {
 	local to="$target_safe_address"
 	local value="0"
 	# Encode the `approveHash(bytes32)` function call with the Safe transaction hash.
-	# See (`approveHash` function): https://github.com/safe-global/safe-smart-account/blob/bdcfce3a76c4d1dfb256ac2ca971be7cfd6e493a/contracts/Safe.sol#L372-L379.
-	# See (`execTransaction` function part): https://github.com/safe-global/safe-smart-account/blob/bdcfce3a76c4d1dfb256ac2ca971be7cfd6e493a/contracts/Safe.sol#L108-L143.
-	# See (`checkNSignatures` function part): https://github.com/safe-global/safe-smart-account/blob/bdcfce3a76c4d1dfb256ac2ca971be7cfd6e493a/contracts/Safe.sol#L318-L323.
+	# See (`approveHash` function): https://github.com/safe-fndn/safe-smart-account/blob/bdcfce3a76c4d1dfb256ac2ca971be7cfd6e493a/contracts/Safe.sol#L372-L379.
+	# See (`execTransaction` function part): https://github.com/safe-fndn/safe-smart-account/blob/bdcfce3a76c4d1dfb256ac2ca971be7cfd6e493a/contracts/Safe.sol#L108-L143.
+	# See (`checkNSignatures` function part): https://github.com/safe-fndn/safe-smart-account/blob/bdcfce3a76c4d1dfb256ac2ca971be7cfd6e493a/contracts/Safe.sol#L318-L323.
 	# => `bytes4(keccak256("approveHash(bytes32)"));`
 	local approve_hash_signature="0xd4d9bdcd"
 	# => `abi.encodePacked(bytes4(keccak256("approveHash(bytes32)")), bytes32(safeTxHash));`
@@ -805,7 +827,7 @@ warn_if_delegate_call() {
 	local to="$2"
 
 	# Warn the user if `operation` equals `1`, implying a `delegatecall`, and if the `to` address is untrusted.
-	# See: https://github.com/safe-global/safe-smart-account/blob/34359e8305d618b7d74e39ed370a6b59ab14f827/contracts/libraries/Enum.sol.
+	# See: https://github.com/safe-fndn/safe-smart-account/blob/34359e8305d618b7d74e39ed370a6b59ab14f827/contracts/libraries/Enum.sol.
 	if [[ "$operation" -eq 1 && ! " ${TRUSTED_FOR_DELEGATE_CALL[@]} " =~ " ${to} " ]]; then
 		cat <<EOF
 
@@ -910,7 +932,7 @@ simulate_transaction() {
 		"$signature")
 
 	# The (partial) storage layout of the Safe contracts (since `v0.1.0`):
-	# See: https://github.com/safe-global/safe-smart-account/blob/333f84083e58df8e70b03e7f7df1947c1d77b262/contracts/libraries/SafeStorage.sol.
+	# See: https://github.com/safe-fndn/safe-smart-account/blob/333f84083e58df8e70b03e7f7df1947c1d77b262/contracts/libraries/SafeStorage.sol.
 	# - `masterCopy` (slot: 0, offset: 0, size: 20 bytes),
 	# - `modules`    (slot: 1, offset: 0, size: 32 bytes),
 	# - `owners`     (slot: 2, offset: 0, size: 32 bytes),
@@ -938,7 +960,7 @@ Please note that we override specific Safe contract storage slots for this call:
 
 Then execute the \`cast call --trace\` command with the transaction payload from \`signer_address\` address \`$signer_address\` using the overridden states:${RESET}
 \`\`\`bash
-${GREEN}cast call --trace --from "$signer_address" \\
+${GREEN}cast call --color $CAST_COLOUR --trace --from "$signer_address" \\
   "$address" \\
   --data "$safe_tx_payload" \\
   --override-state-diff "$address:$owner_slot:1,$address:4:1,$address:$GUARD_STORAGE_SLOT:0,$address:$MODULE_GUARD_STORAGE_SLOT:0" \\
@@ -954,7 +976,7 @@ EOF
 	# - Disable the configured transaction and module guards.
 	# Then execute the `cast call --trace` command with the transaction payload from
 	# `signer_address` using the overridden state.
-	cast call --trace --from "$signer_address" \
+	cast call --color $CAST_COLOUR --trace --from "$signer_address" \
 		"$address" \
 		--data "$safe_tx_payload" \
 		--override-state-diff "$address:$owner_slot:1,$address:4:1,$address:5:$nonce,$address:$GUARD_STORAGE_SLOT:0,$address:$MODULE_GUARD_STORAGE_SLOT:0" \
@@ -1089,6 +1111,19 @@ EOF
 	print_field "Safe message hash" "$safe_msg_hash"
 }
 
+# Utility function to validate that the next CLI argument has a value.
+validate_cli_argument() {
+	local arg_name="$1"
+	local remaining_args="$2"
+	local next_value="${3:-}"
+
+	# Ensure the next CLI argument exists and is not another flag (i.e. does not start with `--`).
+	if [[ "$remaining_args" -lt 2 || "$next_value" =~ ^-- ]]; then
+		echo -e "${BOLD}${RED}Error: The argument \`$arg_name\` requires a value, but none was provided. Please specify a valid value after the flag!${RESET}\n" >&2
+		usage
+	fi
+}
+
 ##############################################
 # Safe Transaction/Message Hashes Calculator #
 ##############################################
@@ -1143,26 +1178,32 @@ calculate_safe_hashes() {
 		--version) get_latest_git_commit_hash ;;
 		--list-networks) list_networks ;;
 		--network)
+			validate_cli_argument "$1" "$#" "${2:-}"
 			network="$2"
 			shift 2
 			;;
 		--address)
+			validate_cli_argument "$1" "$#" "${2:-}"
 			address="$2"
 			shift 2
 			;;
 		--nonce)
+			validate_cli_argument "$1" "$#" "${2:-}"
 			nonce="$2"
 			shift 2
 			;;
 		--nested-safe-address)
+			validate_cli_argument "$1" "$#" "${2:-}"
 			nested_safe_address="$2"
 			shift 2
 			;;
 		--nested-safe-nonce)
+			validate_cli_argument "$1" "$#" "${2:-}"
 			nested_safe_nonce="$2"
 			shift 2
 			;;
 		--message)
+			validate_cli_argument "$1" "$#" "${2:-}"
 			message_file="$2"
 			shift 2
 			;;
@@ -1171,6 +1212,7 @@ calculate_safe_hashes() {
 			shift
 			;;
 		--simulate)
+			validate_cli_argument "$1" "$#" "${2:-}"
 			rpc_url="$2"
 			shift 2
 			;;
